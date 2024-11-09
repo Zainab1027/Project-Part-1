@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Project Name</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Logo and Application Name -->
+    <header>
+        <img src="logo.png" alt="Team Logo" id="teamLogo"> <!-- Replace with your logo path -->
+        <h1>Your Project Name</h1>
+    </header>
+
+    <!-- Hero Button to Create New Entries -->
+    <section>
+        <button onclick="showCreateForm()">Create New Object</button>
+    </section>
+
+    <!-- Table to Display List of Objects -->
+    <section>
+        <h2>Active Objects</h2>
+        <table id="objectsTable">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content will be injected here using JavaScript -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Hidden Form for Creating/Updating Objects -->
+    <div id="formContainer" style="display:none;">
+        <h3 id="formTitle">Create New Object</h3>
+        <form id="objectForm" onsubmit="submitForm(event)">
+            <input type="text" id="title" name="title" placeholder="Title" required>
+            <textarea id="description" name="description" placeholder="Description" required></textarea>
+            <input type="hidden" id="objectId" name="id">
+            <button type="submit">Submit</button>
+            <button type="button" onclick="closeForm()">Cancel</button>
+        </form>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
