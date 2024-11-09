@@ -1,42 +1,50 @@
-// immediately invoked function expression to encapsulate code
+// Immediately Invoked Function Expression to encapsulate code
 (function () {
-    // Mock data storage - in a real application, this would come from the server
-    let objects = []; // Replace with a real data source if connected to a backend
+    // Load books from the server
+    async function loadObjects() {
+        const response = await fetch('/bookslist');
+        const books = await response.json();
 
-    // Function to load and display objects in the table
-    function loadObjects() {
         const tableBody = document.querySelector('#objectsTable tbody');
         tableBody.innerHTML = ''; // Clear existing content
 
-        objects.forEach((obj, index) => {
+        books.forEach((book, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${obj.title}</td>
-                <td>${obj.description}</td>
+                <td>${book.Name}</td>
+                <td>${book.Author}</td>
+                <td>${book.Published}</td>
+                <td>${book.Description}</td>
+                <td>${book.Price}</td>
                 <td>
-                    <button onclick="editObject(${index})">Edit</button>
-                    <button onclick="deleteObject(${index})">Delete</button>
+                    <button onclick="editObject('${book._id}')">Edit</button>
+                    <button onclick="deleteObject('${book._id}')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
     }
 
-    // Show form for creating a new object
+    // Show form for creating a new book
     function showCreateForm() {
-        document.getElementById('formTitle').innerText = 'Create New Object';
+        document.getElementById('formTitle').innerText = 'Add New Book';
         document.getElementById('objectForm').reset();
-        document.getElementById('objectId').value = ''; // Clear object ID for new entries
+        document.getElementById('objectId').value = ''; // Clear book ID for new entries
         document.getElementById('formContainer').style.display = 'block';
     }
 
-    // Show form for editing an existing object
-    function editObject(index) {
-        const obj = objects[index];
-        document.getElementById('formTitle').innerText = 'Edit Object';
-        document.getElementById('title').value = obj.title;
-        document.getElementById('description').value = obj.description;
-        document.getElementById('objectId').value = index;
+    // Show form for editing an existing book
+    async function editObject(id) {
+        const response = await fetch(`/bookslist/${id}`);
+        const book = await response.json();
+
+        document.getElementById('formTitle').innerText = 'Edit Book';
+        document.getElementById('name').value = book.Name;
+        document.getElementById('author').value = book.Author;
+        document.getElementById('published').value = book.Published;
+        document.getElementById('description').value = book.Description;
+        document.getElementById('price').value = book.Price;
+        document.getElementById('objectId').value = id;
         document.getElementById('formContainer').style.display = 'block';
     }
 
@@ -45,41 +53,49 @@
         document.getElementById('formContainer').style.display = 'none';
     }
 
-    // Submit form for creating or updating an object
-    function submitForm(event) {
+    // Submit form for creating or updating a book
+    async function submitForm(event) {
         event.preventDefault();
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
         const id = document.getElementById('objectId').value;
 
+        const bookData = {
+            Name: document.getElementById('name').value,
+            Author: document.getElementById('author').value,
+            Published: document.getElementById('published').value,
+            Description: document.getElementById('description').value,
+            Price: document.getElementById('price').value,
+        };
+
         if (id) {
-            // Update existing object
-            objects[id] = { title, description };
+            // Update existing book
+            await fetch(`/bookslist/edit/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookData)
+            });
         } else {
-            // Create new object
-            objects.push({ title, description });
+            // Create new book
+            await fetch('/bookslist/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookData)
+            });
         }
 
         loadObjects();
         closeForm();
     }
 
-    // Delete an object
-    function deleteObject(index) {
-        objects.splice(index, 1); // Remove object from array
+    // Delete a book
+    async function deleteObject(id) {
+        await fetch(`/bookslist/delete/${id}`, { method: 'GET' });
         loadObjects();
     }
 
-    // Function to start when the page loads
-    function start() {
-        console.log("app started");
-        loadObjects(); // Load and display objects on page load
-    }
+    // Load books on page load
+    window.addEventListener('load', loadObjects);
 
-    // Attach start function to the window load event
-    window.addEventListener("load", start);
-
-    // Expose functions to global scope for button click access
+    // Expose functions to global scope for button access
     window.showCreateForm = showCreateForm;
     window.editObject = editObject;
     window.deleteObject = deleteObject;

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Project Name</title>
+    <title>Book Library</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,23 +12,26 @@
 
     <!-- Logo and Application Name -->
     <header>
-        <img src="logo.png" alt="Team Logo" id="teamLogo"> <!-- Replace with your logo path -->
-        <h1>Your Project Name</h1>
+        <img src="logo.png" alt="Team Logo" id="teamLogo"> <!-- Replace with your actual logo -->
+        <h1>Book Library</h1>
     </header>
 
-    <!-- Hero Button to Create New Entries -->
+    <!-- Hero Button to Create New Book -->
     <section>
-        <button onclick="showCreateForm()">Create New Object</button>
+        <button onclick="showCreateForm()">Add New Book</button>
     </section>
 
-    <!-- Table to Display List of Objects -->
+    <!-- Table to Display List of Books -->
     <section>
-        <h2>Active Objects</h2>
+        <h2>Available Books</h2>
         <table id="objectsTable">
             <thead>
                 <tr>
-                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Published</th>
                     <th>Description</th>
+                    <th>Price</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -38,12 +41,15 @@
         </table>
     </section>
 
-    <!-- Hidden Form for Creating/Updating Objects -->
+    <!-- Form for Creating/Updating Books -->
     <div id="formContainer" style="display:none;">
-        <h3 id="formTitle">Create New Object</h3>
+        <h3 id="formTitle">Add New Book</h3>
         <form id="objectForm" onsubmit="submitForm(event)">
-            <input type="text" id="title" name="title" placeholder="Title" required>
-            <textarea id="description" name="description" placeholder="Description" required></textarea>
+            <input type="text" id="name" name="Name" placeholder="Book Name" required>
+            <input type="text" id="author" name="Author" placeholder="Author" required>
+            <input type="text" id="published" name="Published" placeholder="Published Year" required>
+            <textarea id="description" name="Description" placeholder="Description" required></textarea>
+            <input type="number" id="price" name="Price" placeholder="Price" required>
             <input type="hidden" id="objectId" name="id">
             <button type="submit">Submit</button>
             <button type="button" onclick="closeForm()">Cancel</button>

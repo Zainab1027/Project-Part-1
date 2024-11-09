@@ -1,122 +1,102 @@
-var express = require('express');
-var router = express.Router();
-let mongoose = require('mongoose');
-// telling my router that I have this model
-let Book = require('../model/book');
-const book = require('../model/book');
-let bookController = require('../controllers/book.js')
-/* Get route for the book list - Read Operation */
-/*
-GET,
-Post,
-Put --> Edit/Update
-*/
-/* Read Operation --> Get route for displaying the books list */
-router.get('/',async(req,res,next)=>{
-try{
-    const BookList = await Book.find();
-    res.render('Book/list',{
-        title:'Books',
-        BookList:BookList
-    })}
-    catch(err){
-        console.error(err);
-        res.render('Book/list',{
-            error:'Error on the server'
-        })
+const express = require('express');
+const router = express.Router();
+const Book = require('../model/book'); // Importing the Book model
+
+// GET - Fetch and display all books
+router.get('/', async (req, res) => {
+    try {
+        const books = await Book.find(); // Fetch all books from the database
+        res.render('Book/list', {
+            title: 'Books',
+            BookList: books
+        });
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        res.status(500).render('Book/list', {
+            error: 'Unable to retrieve books. Please try again later.'
+        });
     }
+});
+
+// GET - Show page to add a new book
+router.get('/add', (req, res) => {
+    res.render('Book/add', {
+        title: 'Add Book'
     });
-/* Create Operation --> Get route for displaying me the Add Page */
-router.get('/add',async(req,res,next)=>{
-    try{
-        res.render('Book/add',{
-            title: 'Add Book'
-        })
-    }
-    catch(err)
-    {
-        console.error(err);
-        res.render('Book/list',{
-            error:'Error on the server'
-        })
-    }
 });
-/* Create Operation --> Post route for processing the Add Page */
-router.post('/add',async(req,res,next)=>{
-    try{
-        let newBook = Book({
-            "Name":req.body.Name,
-            "Author":req.body.Author,
-            "Published":req.body.Published,
-            "Description":req.body.Description,
-            "Price":req.body.Price
+
+// POST - Add a new book to the database
+router.post('/add', async (req, res) => {
+    try {
+        const { Name, Author, Published, Description, Price, ISBN } = req.body;
+        const newBook = new Book({
+            Name,
+            Author,
+            Published,
+            Description,
+            Price,
+            ISBN
         });
-        Book.create(newBook).then(()=>{
-            res.redirect('/bookslist');
-        })
-    }
-    catch(err)
-    {
-        console.error(err);
-        res.render('Book/list',{
-            error:'Error on the server'
-        })
-    }
-});
-/* Update Operation --> Get route for displaying me the Edit Page */
-router.get('/edit/:id',async(req,res,next)=>{
-    try{
-        const id = req.params.id;
-        const bookToEdit= await Book.findById(id);
-        res.render('Book/edit',
-            {
-                title:'Edit Book',
-                Book:bookToEdit
-            }
-        )
-    }
-    catch(err)
-    {
-        console.error(err);
-        next(err); // passing the error
-    }
-});
-/* Update Operation --> Post route for processing the Edit Page */ 
-router.post('/edit/:id',async(req,res,next)=>{
-    try{
-        let id=req.params.id;
-        let updatedBook = Book({
-            "_id":id,
-            "Name":req.body.Name,
-            "Author":req.body.Author,
-            "Published":req.body.Published,
-            "Description":req.body.Description,
-            "Price":req.body.Price
+        await newBook.save(); // Save the new book to MongoDB
+        res.redirect('/bookslist'); // Redirect to book list after adding
+    } catch (error) {
+        console.error("Error adding book:", error);
+        res.status(500).render('Book/add', {
+            title: 'Add Book',
+            error: 'Failed to add book. Ensure all fields are valid and ISBN is unique.'
         });
-        Book.findByIdAndUpdate(id,updatedBook).then(()=>{
-            res.redirect('/bookslist')
-        })
-    }
-    catch(err){
-        console.error(err);
-        res.render('Book/list',{
-            error:'Error on the server'
-        })
     }
 });
-/* Delete Operation --> Get route to perform Delete Operation */
-router.get('/delete/:id',async(req,res,next)=>{
-    try{
-        let id=req.params.id;
-        Book.deleteOne({_id:id}).then(()=>{
-            res.redirect('/bookslist')
-        })
-    }
-    catch(error){
-        console.error(err);
-        res.render('Book/list',{
-            error:'Error on the server'
-        })
+
+// GET - Show page to edit a book
+router.get('/edit/:id', async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id); // Find book by ID
+        if (!book) return res.status(404).send('Book not found'); // Handle book not found
+
+        res.render('Book/edit', {
+            title: 'Edit Book',
+            Book: book
+        });
+    } catch (error) {
+        console.error("Error loading edit page:", error);
+        res.status(500).send('Error loading edit page');
     }
 });
+
+// POST - Update a book in the database
+router.post('/edit/:id', async (req, res) => {
+    try {
+        const { Name, Author, Published, Description, Price, ISBN } = req.body;
+        const updatedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            { Name, Author, Published, Description, Price, ISBN },
+            { new: true } // Return the updated book document
+        );
+
+        if (!updatedBook) return res.status(404).send('Book not found'); // Handle book not found
+        res.redirect('/bookslist'); // Redirect after updating
+    } catch (error) {
+        console.error("Error updating book:", error);
+        res.status(500).render('Book/edit', {
+            title: 'Edit Book',
+            error: 'Failed to update book. Please try again.'
+        });
+    }
+});
+
+// GET - Delete a book from the database
+router.get('/delete/:id', async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id); // Confirm book exists
+        if (!book) return res.status(404).send('Book not found');
+
+        await Book.findByIdAndRemove(req.params.id); // Delete book by ID
+        res.redirect('/bookslist');
+    } catch (error) {
+        console.error("Error deleting book:", error);
+        res.status(500).send('Error deleting book');
+    }
+});
+
 module.exports = router;
