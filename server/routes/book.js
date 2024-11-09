@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error("Error fetching books:", error);
         res.status(500).render('Book/list', {
+            title: 'Books',
             error: 'Unable to retrieve books. Please try again later.'
         });
     }
@@ -38,7 +39,7 @@ router.post('/add', async (req, res) => {
             ISBN
         });
         await newBook.save(); // Save the new book to MongoDB
-        res.redirect('/bookslist'); // Redirect to book list after adding
+        res.redirect('/books'); // Redirect to book list after adding
     } catch (error) {
         console.error("Error adding book:", error);
         res.status(500).render('Book/add', {
@@ -52,7 +53,12 @@ router.post('/add', async (req, res) => {
 router.get('/edit/:id', async (req, res) => {
     try {
         const book = await Book.findById(req.params.id); // Find book by ID
-        if (!book) return res.status(404).send('Book not found'); // Handle book not found
+        if (!book) {
+            return res.status(404).render('Book/edit', {
+                title: 'Edit Book',
+                error: 'Book not found.'
+            });
+        }
 
         res.render('Book/edit', {
             title: 'Edit Book',
@@ -60,7 +66,10 @@ router.get('/edit/:id', async (req, res) => {
         });
     } catch (error) {
         console.error("Error loading edit page:", error);
-        res.status(500).send('Error loading edit page');
+        res.status(500).render('Book/edit', {
+            title: 'Edit Book',
+            error: 'Error loading edit page. Please try again.'
+        });
     }
 });
 
@@ -74,8 +83,13 @@ router.post('/edit/:id', async (req, res) => {
             { new: true } // Return the updated book document
         );
 
-        if (!updatedBook) return res.status(404).send('Book not found'); // Handle book not found
-        res.redirect('/bookslist'); // Redirect after updating
+        if (!updatedBook) {
+            return res.status(404).render('Book/edit', {
+                title: 'Edit Book',
+                error: 'Book not found.'
+            });
+        }
+        res.redirect('/books'); // Redirect to the book list after updating
     } catch (error) {
         console.error("Error updating book:", error);
         res.status(500).render('Book/edit', {
@@ -89,13 +103,21 @@ router.post('/edit/:id', async (req, res) => {
 router.get('/delete/:id', async (req, res) => {
     try {
         const book = await Book.findById(req.params.id); // Confirm book exists
-        if (!book) return res.status(404).send('Book not found');
+        if (!book) {
+            return res.status(404).render('Book/list', {
+                title: 'Books',
+                error: 'Book not found.'
+            });
+        }
 
         await Book.findByIdAndRemove(req.params.id); // Delete book by ID
-        res.redirect('/bookslist');
+        res.redirect('/books'); // Redirect to book list after deletion
     } catch (error) {
         console.error("Error deleting book:", error);
-        res.status(500).send('Error deleting book');
+        res.status(500).render('Book/list', {
+            title: 'Books',
+            error: 'Error deleting book. Please try again.'
+        });
     }
 });
 
