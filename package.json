@@ -19,5 +19,6 @@
   "description": "this is project part 1",
   "main": "server.js",
   "author": "Zainab and Rida",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {}
 }
