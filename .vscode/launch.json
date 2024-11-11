@@ -7,7 +7,7 @@
 
         {
             "name": "Attach to Chrome",
-            "port": 3002,
+            "port": 3000,
             "request": "attach",
             "type": "chrome",
             "webRoot": "${workspaceFolder}"
@@ -16,14 +16,14 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://localhost:3002",
+            "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3002",
+            "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         }
     ]

@@ -1,54 +1,46 @@
-<%- include('../Partials/header') %>
-    <%- include('../Partials/main_nav') %>
-
+<%- include('../Partials/header.ejs') %>
+    <%- include('../Partials/main_nav.ejs') %>
         <main class="container">
             <h1>
                 <%= title %>
             </h1>
-
             <a href="/books/add" class="btn btn-primary">Add New Book</a>
-
-            <% if (BookList && BookList.length> 0) { %>
-                <table class="table table-bordered table-striped mt-4">
-                    <thead>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Published</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% BookList.forEach(book=> { %>
                         <tr>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Published</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Actions</th>
+                            <td>
+                                <%= book.name %>
+                            </td>
+                            <td>
+                                <%= book.author %>
+                            </td>
+                            <td>
+                                <%= book.published %>
+                            </td>
+                            <td>
+                                <%= book.description %>
+                            </td>
+                            <td>
+                                <%= book.price %>
+                            </td>
+                            <td>
+                                <a href="/books/edit/<%= book._id %>">Edit</a>
+                                <a href="/books/delete/<%= book._id %>">Delete</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% BookList.forEach(book=> { %>
-                            <tr>
-                                <td>
-                                    <%= book.Name %>
-                                </td>
-                                <td>
-                                    <%= book.Author %>
-                                </td>
-                                <td>
-                                    <%= book.Published %>
-                                </td>
-                                <td>
-                                    <%= book.Description %>
-                                </td>
-                                <td>
-                                    <%= book.Price %>
-                                </td>
-                                <td>
-                                    <a href="/books/edit/<%= book._id %>" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="/books/delete/<%= book._id %>" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                            <% }) %>
-                    </tbody>
-                </table>
-                <% } else { %>
-                    <p>No books available.</p>
-                    <% } %>
+                        <% }) %>
+                </tbody>
+            </table>
         </main>
-
-        <%- include('../Partials/footer') %>
+        <%- include('../Partials/footer.ejs') %>

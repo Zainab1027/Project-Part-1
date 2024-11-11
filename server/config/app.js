@@ -1,56 +1,33 @@
-let createError = require('http-errors');
-let express = require('express');
-let path = require('path');
-let cookieParser = require('cookie-parser');
-let logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const app = express();
+const DB = require('./db');
 
-let app = express();
+// Connect to MongoDB
+mongoose.connect(DB.URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.log("MongoDB Connection Error:", error));
 
-// Import routes
-let indexRouter = require('../routes/index');
-let usersRouter = require('../routes/users');
-let bookRouter = require('../routes/book'); // Correct path for the bookRouter
-
-// Set up view engine
+// View engine setup
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
-// Mongoose setup and connection
-const mongoose = require('mongoose');
-let DB = require('./db');
-
-// Connect to MongoDB using the URI from db.js
-mongoose.connect(DB.URI, { useNewUrlParser: true, useUnifiedTopology: true });
-let mongoDB = mongoose.connection;
-mongoDB.on('error', console.error.bind(console, 'Connection Error:'));
-mongoDB.once('open', () => {
-  console.log('Connected to MongoDB');
-});
-
-// Middleware setup
-app.use(logger('dev'));
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../../public')));
-app.use(express.static(path.join(__dirname, '../../node_modules')));
 
-// Route setup
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/books', bookRouter); // Use '/books' route for bookRouter
+// Routes
+app.use('/', require('../routes/index'));
+app.use('/books', require('../routes/book'));
 
 // 404 error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// General error handler
-app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error', { title: 'Error' });
+app.use((req, res) => {
+  res.status(404).render('error', { title: 'Error', message: 'Page Not Found' });
 });
 
 module.exports = app;
+
