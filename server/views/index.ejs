@@ -2,73 +2,54 @@
     <%- include Partials/main_nav.ejs %>
 
         <!-- Main content -->
-        <main>
+        <main class="container">
             <h1>
                 <%= title %>
             </h1>
-            <p>Welcome to the <%= title %> page!</p>
 
-            <!-- Hero Button to Create New Book -->
             <section>
-                <button onclick="showCreateForm()">Add New Book</button>
+                <a href="/bookslist/add" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Add Book
+                </a>
             </section>
 
-            <!-- Table to Display List of Books -->
-            <section>
-                <h2>Available Books</h2>
-                <table id="objectsTable">
-                    <thead>
+            <table class="table table-bordered table-striped table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Published</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% BookList.forEach(book=> { %>
                         <tr>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Published</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Actions</th>
+                            <td>
+                                <%= book.Name %>
+                            </td>
+                            <td>
+                                <%= book.Author %>
+                            </td>
+                            <td>
+                                <%= book.Published %>
+                            </td>
+                            <td>
+                                <%= book.Description %>
+                            </td>
+                            <td>
+                                <%= book.Price %>
+                            </td>
+                            <td>
+                                <a href="/bookslist/edit/<%= book._id %>" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="/bookslist/delete/<%= book._id %>" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% BookList.forEach(book=> { %> <!-- Dynamically render rows for each book -->
-                            <tr>
-                                <td>
-                                    <%= book.Name %>
-                                </td>
-                                <td>
-                                    <%= book.Author %>
-                                </td>
-                                <td>
-                                    <%= book.Published %>
-                                </td>
-                                <td>
-                                    <%= book.Description %>
-                                </td>
-                                <td>
-                                    <%= book.Price %>
-                                </td>
-                                <td>
-                                    <button onclick="editObject('<%= book._id %>')">Edit</button>
-                                    <button onclick="deleteObject('<%= book._id %>')">Delete</button>
-                                </td>
-                            </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- Form for Creating/Updating Books -->
-            <div id="formContainer" style="display:none;">
-                <h3 id="formTitle">Add New Book</h3>
-                <form id="objectForm" onsubmit="submitForm(event)">
-                    <input type="text" id="name" name="Name" placeholder="Book Name" required>
-                    <input type="text" id="author" name="Author" placeholder="Author" required>
-                    <input type="text" id="published" name="Published" placeholder="Published Year" required>
-                    <textarea id="description" name="Description" placeholder="Description" required></textarea>
-                    <input type="number" id="price" name="Price" placeholder="Price" required>
-                    <input type="hidden" id="objectId" name="id">
-                    <button type="submit">Submit</button>
-                    <button type="button" onclick="closeForm()">Cancel</button>
-                </form>
-            </div>
+                        <% }) %>
+                </tbody>
+            </table>
         </main>
 
         <%- include Partials/footer.ejs %>

@@ -13,7 +13,11 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.8.1",
     "morgan": "~1.9.1"
-  }
+  },
+  "description": "this is project part 1",
+  "main": "server.js",
+  "author": "Zainab and Rida",
+  "license": "ISC"
 }
