@@ -2,54 +2,70 @@
     <%- include Partials/main_nav.ejs %>
 
         <!-- Main content -->
-        <main class="container">
-            <h1>
-                <%= title %>
-            </h1>
+        <main class="container mt-5">
+            <!-- Site Name and Logo -->
+            <div class="text-center mb-4">
+                <img id="teamLogo" src="/path/to/logo.png" alt="Team Logo" class="mb-3" style="width: 100px;">
+                <h1>
+                    <%= title || "Book Database" %>
+                </h1>
+            </div>
 
-            <section>
-                <a href="/bookslist/add" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Add Book
+            <!-- Hero Button -->
+            <section class="text-center mb-3">
+                <a href="/bookslist/add" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus-circle"></i> Add New Book
                 </a>
             </section>
 
-            <table class="table table-bordered table-striped table-hover mt-3">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Published</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% BookList.forEach(book=> { %>
+            <!-- Books List Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover mt-3">
+                    <thead class="table-dark">
                         <tr>
-                            <td>
-                                <%= book.Name %>
-                            </td>
-                            <td>
-                                <%= book.Author %>
-                            </td>
-                            <td>
-                                <%= book.Published %>
-                            </td>
-                            <td>
-                                <%= book.Description %>
-                            </td>
-                            <td>
-                                <%= book.Price %>
-                            </td>
-                            <td>
-                                <a href="/bookslist/edit/<%= book._id %>" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="/bookslist/delete/<%= book._id %>" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Published</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Actions</th>
                         </tr>
-                        <% }) %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% if (BookList && BookList.length> 0) { %>
+                            <% BookList.forEach(book=> { %>
+                                <tr>
+                                    <td>
+                                        <%= book.Name %>
+                                    </td>
+                                    <td>
+                                        <%= book.Author %>
+                                    </td>
+                                    <td>
+                                        <%= book.Published %>
+                                    </td>
+                                    <td>
+                                        <%= book.Description %>
+                                    </td>
+                                    <td>
+                                        <%= book.Price %>
+                                    </td>
+                                    <td>
+                                        <a href="/bookslist/edit/<%= book._id %>"
+                                            class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="/bookslist/delete/<%= book._id %>"
+                                            class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6" class="text-center">No books available</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </main>
 
         <%- include Partials/footer.ejs %>

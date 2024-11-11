@@ -6,28 +6,20 @@
 
 var app = require('./server/config/app');
 var debug = require('debug')('infrproject:server');
-var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3002');
+
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Start the server with app.listen
  */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -82,7 +74,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr = app.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
