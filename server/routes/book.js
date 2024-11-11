@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
         const books = await Book.find(); // Fetch all books from the database
         res.render('Book/list', {
             title: 'Books',
-            BookList: books
+            BookList: books // Passing books as BookList to EJS
         });
     } catch (error) {
         console.error("Error fetching books:", error);
@@ -29,14 +29,13 @@ router.get('/add', (req, res) => {
 // POST - Add a new book to the database
 router.post('/add', async (req, res) => {
     try {
-        const { Name, Author, Published, Description, Price, ISBN } = req.body;
+        const { Name, Author, Published, Description, Price } = req.body;
         const newBook = new Book({
             Name,
             Author,
             Published,
             Description,
-            Price,
-            ISBN
+            Price
         });
         await newBook.save(); // Save the new book to MongoDB
         res.redirect('/books'); // Redirect to book list after adding
@@ -44,7 +43,7 @@ router.post('/add', async (req, res) => {
         console.error("Error adding book:", error);
         res.status(500).render('Book/add', {
             title: 'Add Book',
-            error: 'Failed to add book. Ensure all fields are valid and ISBN is unique.'
+            error: 'Failed to add book. Ensure all fields are valid.'
         });
     }
 });
@@ -59,7 +58,6 @@ router.get('/edit/:id', async (req, res) => {
                 error: 'Book not found.'
             });
         }
-
         res.render('Book/edit', {
             title: 'Edit Book',
             Book: book
@@ -76,19 +74,14 @@ router.get('/edit/:id', async (req, res) => {
 // POST - Update a book in the database
 router.post('/edit/:id', async (req, res) => {
     try {
-        const { Name, Author, Published, Description, Price, ISBN } = req.body;
-        const updatedBook = await Book.findByIdAndUpdate(
-            req.params.id,
-            { Name, Author, Published, Description, Price, ISBN },
-            { new: true } // Return the updated book document
-        );
-
-        if (!updatedBook) {
-            return res.status(404).render('Book/edit', {
-                title: 'Edit Book',
-                error: 'Book not found.'
-            });
-        }
+        const { Name, Author, Published, Description, Price } = req.body;
+        await Book.findByIdAndUpdate(req.params.id, {
+            Name,
+            Author,
+            Published,
+            Description,
+            Price
+        }, { new: true });
         res.redirect('/books'); // Redirect to the book list after updating
     } catch (error) {
         console.error("Error updating book:", error);
@@ -102,15 +95,7 @@ router.post('/edit/:id', async (req, res) => {
 // GET - Delete a book from the database
 router.get('/delete/:id', async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id); // Confirm book exists
-        if (!book) {
-            return res.status(404).render('Book/list', {
-                title: 'Books',
-                error: 'Book not found.'
-            });
-        }
-
-        await Book.findByIdAndRemove(req.params.id); // Delete book by ID
+        await Book.findByIdAndDelete(req.params.id); // Delete book by ID
         res.redirect('/books'); // Redirect to book list after deletion
     } catch (error) {
         console.error("Error deleting book:", error);

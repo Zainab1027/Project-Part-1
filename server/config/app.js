@@ -5,9 +5,11 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 
 let app = express();
+
+// Import routes
 let indexRouter = require('../routes/index');
 let usersRouter = require('../routes/users');
-let bookRouter = require('../routes/book');
+let bookRouter = require('../routes/book'); // Correct path for the bookRouter
 
 // Set up view engine
 app.set('views', path.join(__dirname, '../views'));
@@ -36,7 +38,7 @@ app.use(express.static(path.join(__dirname, '../../node_modules')));
 // Route setup
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/bookslist', bookRouter);
+app.use('/books', bookRouter); // Use '/books' route for bookRouter
 
 // 404 error handler
 app.use(function (req, res, next) {
