@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/book');
 
-// Routes
 router.get('/', bookController.getAllBooks);
 router.get('/add', bookController.showAddBookForm);
 router.post('/add', bookController.addBook);
