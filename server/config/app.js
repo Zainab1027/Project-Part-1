@@ -1,14 +1,30 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const connectDB = require('./db');
+const mongoose = require('mongoose');
+
+// Import routes
+const indexRouter = require('../routes/index');
+const usersRouter = require('../routes/users');
+const bookRouter = require('../routes/book');
 
 const app = express();
-connectDB();
 
 // Set up view engine
-app.set('views', path.join(__dirname, '../../views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
+
+// MongoDB connection setup
+require('dotenv').config();
+const DB_URI = process.env.DB_URI;
+
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 // Middleware
 app.use(express.json());
@@ -17,19 +33,20 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../../public')));
 
 // Routes
-app.use('/', require('../routes/index'));
-app.use('/books', require('../routes/book'));
-app.use('/users', require('../routes/users'));
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/books', bookRouter); // Route for book CRUD operations
 
-// 404 error handler
-app.use((req, res) => {
-  res.status(404).render('error', { title: 'Error', message: 'Page Not Found' });
+// Error handling
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.render('error', { title: 'Error', message: err.message });
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.render('error', { title: 'Error', error });
 });
 
 module.exports = app;

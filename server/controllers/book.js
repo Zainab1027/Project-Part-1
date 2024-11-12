@@ -1,57 +1,62 @@
 const Book = require('../model/book');
 
-// Fetch all books
+// Display all books
 exports.getAllBooks = async (req, res) => {
     try {
         const books = await Book.find();
         res.render('Book/list', { title: 'Books', BookList: books });
     } catch (error) {
-        res.status(500).send('Error retrieving books');
+        console.error("Error fetching books:", error);
+        res.status(500).render('Book/list', { title: 'Books', error: 'Failed to load books' });
     }
+};
+
+// Show form to add a new book
+exports.showAddBookForm = (req, res) => {
+    res.render('Book/add', { title: 'Add Book' });
 };
 
 // Add a new book
-exports.showAddBookForm = (req, res) => {
-    res.render('Book/add', { title: 'Add New Book' });
-};
-
 exports.addBook = async (req, res) => {
-    const { name, author, published, description, price } = req.body;
     try {
-        await Book.create({ name, author, published, description, price });
+        const newBook = new Book(req.body);
+        await newBook.save();
         res.redirect('/books');
     } catch (error) {
-        res.status(500).send('Error adding book');
+        console.error("Error adding book:", error);
+        res.status(500).render('Book/add', { title: 'Add Book', error: 'Failed to add book' });
     }
 };
 
-// Edit book
+// Show form to edit a book
 exports.showEditBookForm = async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
-        res.render('Book/edit', { title: 'Edit Book', book });
+        res.render('Book/edit', { title: 'Edit Book', Book: book });
     } catch (error) {
-        res.status(404).send('Book not found');
+        console.error("Error fetching book:", error);
+        res.status(500).render('Book/edit', { title: 'Edit Book', error: 'Failed to load book' });
     }
 };
 
+// Update a book
 exports.updateBook = async (req, res) => {
-    const { name, author, published, description, price } = req.body;
     try {
-        await Book.findByIdAndUpdate(req.params.id, { name, author, published, description, price });
+        await Book.findByIdAndUpdate(req.params.id, req.body);
         res.redirect('/books');
     } catch (error) {
-        res.status(500).send('Error updating book');
+        console.error("Error updating book:", error);
+        res.status(500).render('Book/edit', { title: 'Edit Book', error: 'Failed to update book' });
     }
 };
 
-// Delete book
+// Delete a book
 exports.deleteBook = async (req, res) => {
     try {
         await Book.findByIdAndRemove(req.params.id);
         res.redirect('/books');
     } catch (error) {
-        res.status(500).send('Error deleting book');
+        console.error("Error deleting book:", error);
+        res.status(500).render('Book/list', { title: 'Books', error: 'Failed to delete book' });
     }
 };
-
