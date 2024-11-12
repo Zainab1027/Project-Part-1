@@ -1,41 +1,150 @@
+/* General styles */
 body {
-    background-color: #1a1a1a;
-    /* Black background */
-    color: #e0e0e0;
-    /* Light grey text */
     font-family: Arial, sans-serif;
+    color: rgb(219, 140, 243);
+    background-color: black;
     text-align: center;
 }
 
 h1 {
-    color: #9370DB;
-    /* Lavender */
+    color: rgb(207, 151, 246);
+    margin-top: 20px;
 }
 
-.btn-primary {
-    background-color: #87CEEB;
-    /* Sky blue */
-    border-color: #87CEEB;
-}
-
-.btn-primary:hover {
-    background-color: #6CA6CD;
-    /* Darker sky blue */
-}
-
-.table-dark {
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: center;
     background-color: #333;
-    /* Dark background for table header */
-    color: #FFF;
+    padding: 10px;
 }
 
-.table-hover tbody tr:hover {
-    background-color: #444;
-    /* Darker shade for hover effect */
+.navbar a {
+    color: rgb(237, 155, 255);
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
 }
 
-#teamLogo {
-    width: 100px;
-    height: auto;
-    margin-bottom: 10px;
+.navbar a:hover {
+    color: skyblue;
+}
+
+/* Button styling */
+button,
+.btn-primary {
+    background-color: skyblue;
+    color: black;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Table styling */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    color: white;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Form container styling */
+#formContainer {
+    margin-top: 20px;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 20px;
+    color: rgb(84, 41, 118);
+}
+
+/* Flexbox layout for full-page structure */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: rgb(219, 140, 243);
+    background-color: black;
+    text-align: center;
+}
+
+/* Centered Main Content */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+h1 {
+    color: rgb(207, 151, 246);
+    font-size: 2.5em;
+    margin: 20px 0;
+}
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+.navbar a {
+    color: rgb(237, 155, 255);
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    color: skyblue;
+}
+
+/* Button styling */
+button,
+.btn-primary {
+    background-color: skyblue;
+    color: black;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* Table styling */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    color: white;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Footer fixed to bottom */
+footer {
+    background-color: #333;
+    color: rgb(84, 41, 118);
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
 }

@@ -1,6 +1,7 @@
 // Immediately Invoked Function Expression to encapsulate code
 (function () {
     // Load books from the server
+
     async function loadObjects() {
         const response = await fetch('/bookslist');
         const books = await response.json();
