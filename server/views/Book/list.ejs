@@ -1,46 +1,42 @@
 <%- include('../Partials/header.ejs') %>
     <%- include('../Partials/main_nav.ejs') %>
-        <main class="container">
-            <h1>
-                <%= title %>
-            </h1>
-            <a href="/books/add" class="btn btn-primary">Add New Book</a>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Published</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Published</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (BookList && BookList.length> 0) { %>
                     <% BookList.forEach(book=> { %>
                         <tr>
                             <td>
-                                <%= book.name %>
+                                <%= book.Name %>
                             </td>
                             <td>
-                                <%= book.author %>
+                                <%= book.Author %>
                             </td>
                             <td>
-                                <%= book.published %>
+                                <%= book.Published %>
                             </td>
                             <td>
-                                <%= book.description %>
+                                <%= book.Description %>
                             </td>
                             <td>
-                                <%= book.price %>
-                            </td>
-                            <td>
-                                <a href="/books/edit/<%= book._id %>">Edit</a>
-                                <a href="/books/delete/<%= book._id %>">Delete</a>
+                                <%= book.Price %>
                             </td>
                         </tr>
                         <% }) %>
-                </tbody>
-            </table>
-        </main>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5">No books available</td>
+                                </tr>
+                                <% } %>
+            </tbody>
+        </table>
+
         <%- include('../Partials/footer.ejs') %>
