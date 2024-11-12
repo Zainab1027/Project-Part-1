@@ -1,6 +1,34 @@
-const app = require('./server/config/app');
-const PORT = process.env.PORT || 3000;
+require('dotenv').config(); // Load environment variables from .env file
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+const app = express();
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Use the port from .env
+const port = process.env.PORT || 3000;
+
+// Set view engine
+app.set('views', path.join(__dirname, 'server/views'));
+app.set('view engine', 'ejs');
+
+// Connect to MongoDB
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("Could not connect to MongoDB", error));
+
+// Middleware setup
+app.use(express.json());
+
+// Serve static files (CSS) from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Import routes
+const indexRouter = require('./server/routes/index'); // Ensure path is correct
+
+// Use routes
+app.use('/', indexRouter); // Set root route to use indexRouter
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });

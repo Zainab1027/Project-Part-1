@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const indexRouter = require('../routes/index');
 const usersRouter = require('../routes/users');
 const bookRouter = require('../routes/book');
-
+app.use('/', indexRouter);
 const app = express();
 
 // Set up view engine
