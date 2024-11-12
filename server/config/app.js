@@ -1,34 +1,39 @@
-require('dotenv').config(); // Load .env variables at the start
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+
 const app = express();
-const DB = require('./db');
 
-// Connect to MongoDB
-mongoose.connect(DB.URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// MongoDB Connection
+const DB = require('./db').URI; // Load URI from db.js
+mongoose.connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
-  .catch((error) => console.log("MongoDB Connection Error:", error));
+  .catch((error) => console.error("MongoDB Connection Error:", error));
 
-// View engine setup
-app.set('views', path.join(__dirname, '../views'));
+// View Engine Setup
+app.set('views', path.join(__dirname, '../../views')); // Adjust for correct path
 app.set('view engine', 'ejs');
 
-// Middleware
+// Middleware Setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../../public')));
 
-// Routes
-app.use('/', require('../routes/index'));
-app.use('/books', require('../routes/book'));
+// Routes Setup
+app.use('/', require('../routes/index')); // Landing Page route
+app.use('/books', require('../routes/book')); // Books route
+app.use('/users', require('../routes/users')); // Users route, if needed
 
-// 404 error handler
+// 404 Error Handler
 app.use((req, res) => {
   res.status(404).render('error', { title: 'Error', message: 'Page Not Found' });
 });
 
-module.exports = app;
+// General Error Handler
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).render('error', { title: 'Error', message: err.message });
+});
 
+module.exports = app;
