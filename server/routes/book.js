@@ -1,15 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const Book = require('../model/book');
+let express = require('express');
+let router = express.Router();
 
-// Get all books (basic)
-router.get('/', async (req, res) => {
-  try {
-    const books = await Book.find();
-    res.render('Book/list', { title: 'Book List', BookList: books });
-  } catch (error) {
-    res.status(500).send("Error fetching books");
-  }
+/* GET books listing. */
+router.get('/', function (req, res, next) {
+  res.send('Books Page');
 });
 
 module.exports = router;
