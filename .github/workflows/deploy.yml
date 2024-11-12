@@ -18,3 +18,7 @@ jobs:
         with:
           branch: gh-pages  # The branch to deploy the site to
           folder: ./        # Folder containing the files to deploy (we're using root)
+
+git add .github/workflows/deploy.yml
+git commit -m "Add GitHub Actions deployment workflow"
+git push origin main
