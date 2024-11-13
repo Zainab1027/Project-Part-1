@@ -1,19 +1,10 @@
 const express = require('express');
-const app = express();
-const port = 3000;
+const router = express.Router();  // Use Router, not app
 
-// Set up the view engine
-app.set('view engine', 'ejs');
+// Define routes for your app
+router.get('/', (req, res) => res.render('index', { title: 'Home' }));
+router.get('/movies', (req, res) => res.render('movies', { title: 'Movies List' })); // Display all movies
+router.get('/movies/add', (req, res) => res.render('add', { title: 'Add New Movie' })); // Add new movie
+router.get('/movies/edit/:id', (req, res) => res.render('edit', { title: 'Edit Movie' })); // Edit movie based on ID
 
-// Define routes for different pages
-app.get('/', (req, res) => res.render('index', { title: 'Home' }));
-app.get('/home', (req, res) => res.render('index', { title: 'Home' }));
-app.get('/aboutus', (req, res) => res.render('index', { title: 'About Us' }));
-app.get('/product', (req, res) => res.render('index', { title: 'Product' }));
-app.get('/service', (req, res) => res.render('index', { title: 'Service' }));
-app.get('/contactus', (req, res) => res.render('index', { title: 'Contact us' }));
-
-// Start the Express server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
-});
+module.exports = router; // Export the router

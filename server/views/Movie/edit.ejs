@@ -1,7 +1,7 @@
-<%- include ../Partials/header.ejs %>
-    <%- include ../Partials/main_nav.ejs %>
+<%- include '../Partials/header.ejs' %>
+    <%- include '../Partials/main_nav.ejs' %>
 
-        <!-- Book Database -->
+        <!-- Movie Database -->
         <main class="container">
             <div class="row">
                 <div class="offset-md-1 col-md-10">
@@ -9,42 +9,42 @@
                         <%= title %>
                     </h1>
                     <br>
-                    <a href="/bookslist/add" class="btn btn-primary" role="button">
-                        <i class="fas fa-plus-circle"></i> Add Book
+                    <a href="/movies/add" class="btn btn-primary" role="button">
+                        <i class="fas fa-plus-circle"></i> Add Movie
                     </a>
                     <table class="table table-bordered table-striped table-hover">
                         <tr class="d-flex">
-                            <th class="text-center col-2">Name</th>
-                            <th class="text-center col-2">Author</th>
-                            <th class="text-center col-1">Published</th>
+                            <th class="text-center col-2">Title</th>
+                            <th class="text-center col-2">Genre</th>
+                            <th class="text-center col-1">Year Released</th>
                             <th class="col-4">Description</th>
-                            <th class="text-center col-1">Price</th>
+                            <th class="text-center col-1">Rating</th>
                             <th class="text-center col-2">Actions</th>
                         </tr>
-                        <% BookList.forEach(book=> { %>
+                        <% MovieList.forEach(movie=> { %>
                             <tr class="d-flex">
                                 <td class="text-center col-2">
-                                    <%= book.Name %>
+                                    <%= movie.title %>
                                 </td>
                                 <td class="text-center col-2">
-                                    <%= book.Author %>
+                                    <%= movie.genre %>
                                 </td>
                                 <td class="text-center col-1">
-                                    <%= book.Published %>
+                                    <%= movie.year %>
                                 </td>
                                 <td class="col-4">
-                                    <%= book.Description %>
+                                    <%= movie.description %>
                                 </td>
                                 <td class="text-center col-1">
-                                    <%= book.Price %>
+                                    <%= movie.rating %>
                                 </td>
                                 <td class="text-center col-1">
-                                    <a href="/bookslist/edit/<%= book._id %>" class="btn btn-primary btn-sm">
+                                    <a href="/movies/edit/<%= movie._id %>" class="btn btn-primary btn-sm">
                                         <i class="fas fa-pencil-alt"></i> Edit
                                     </a>
                                 </td>
                                 <td class="text-center col-1">
-                                    <a href="/bookslist/delete/<%= book._id %>" class="btn btn-danger btn-sm">
+                                    <a href="/movies/delete/<%= movie._id %>" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash-alt"></i> Delete
                                     </a>
                                 </td>
@@ -55,4 +55,4 @@
             </div>
         </main>
 
-        <%- include ../Partials/footer.ejs %>
+        <%- include '../Partials/footer.ejs' %>

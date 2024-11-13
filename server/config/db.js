@@ -1,5 +1,4 @@
 require('dotenv').config(); // Make sure to load .env variables
-
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

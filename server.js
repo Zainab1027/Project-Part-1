@@ -1,37 +1,86 @@
-require('dotenv').config(); // Load environment variables from .env file
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
-const app = express();
+#!/usr/bin/env node
 
-// Use the port from .env
-const port = process.env.PORT || 3000;
+/**
+ * Module dependencies.
+ */
+const app = require('./config/app');  // Import the app from the app.js in the config folder
+const debug = require('debug')('infrproject:server');  // Debugging module to print server status
+const http = require('http');  // Node's HTTP module
 
-// Set view engine
-app.set('views', path.join(__dirname, 'server/views'));
-app.set('view engine', 'ejs');
+/**
+ * Get port from environment and store in Express.
+ */
+const port = normalizePort(process.env.PORT || '3000');  // Normalize port for use in server
+app.set('port', port);  // Set port in the app configuration
 
-// Connect to MongoDB
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((error) => console.error("Could not connect to MongoDB", error));
+/**
+ * Create HTTP server.
+ */
+const server = http.createServer(app);  // Create a server with the app as the handler
 
-// Middleware setup
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Add this to handle form submissions
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(port);
+server.on('error', onError);  // Handle errors on the server
+server.on('listening', onListening);  // Handle server start event
 
-// Serve static files (CSS) from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+/**
+ * Normalize a port into a number, string, or false.
+ * This function checks if the given value is a valid port.
+ */
+function normalizePort(val) {
+  const port = parseInt(val, 10);
 
-// Import routes
-const indexRouter = require('./server/routes/index'); // Main page router
-const bookRouter = require('./server/routes/book');   // Books router
+  if (isNaN(port)) {
+    // If it's not a number, treat it as a named pipe
+    return val;
+  }
 
-// Use routes
-app.use('/', indexRouter);       // Set root route to use indexRouter
-app.use('/books', bookRouter);   // Set '/books' route to use bookRouter
+  if (port >= 0) {
+    // If it's a valid number and >= 0, return as port number
+    return port;
+  }
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+  return false;  // Return false if not valid
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ * This function handles specific errors for the server.
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;  // Rethrow if the error is not related to the listening process
+  }
+
+  const bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // Handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);  // Exit the process if elevated privileges are needed
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);  // Exit the process if the port is already in use
+      break;
+    default:
+      throw error;  // Throw error if not one of the above
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ * This function will execute when the server starts listening.
+ */
+function onListening() {
+  const addr = server.address();  // Get server address
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);  // Log the listening status
+}

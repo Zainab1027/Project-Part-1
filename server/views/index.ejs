@@ -7,26 +7,28 @@
     <title>
         <%= title %>
     </title>
-    <link rel="stylesheet" href="/Content/style.css">
+    <link rel="stylesheet" href="/public/content/style.css"> <!-- Check that this path is correct -->
 </head>
 
 <body>
     <header>
-        <h1>INFR3120 Project</h1>
+        <h1>
+            <img src="/public/content/TEAMLOGO.png" alt="R&Z" style="width: 250px; height: auto;">
+        </h1>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/books">Books</a></li>
-                <li><a href="/books/add">Add New Book</a></li>
-                <li><a href="https://github.com/YourRepository">GitHub Repository</a></li>
+                <li><a href="/movies">Movies</a></li>
+                <li><a href="/movies/add">Add New Movie</a></li>
+                <li><a href="https://github.com/Zainab1027/Project-Part-1">GitHub Repository</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h1>Welcome to My Book Library</h1>
-        <p>This site allows you to add, view, edit, and delete books from the library collection.</p>
-        <a href="/books/add" class="btn">Add New Book</a>
+        <h1>Welcome to Our Movie Library!!</h1>
+        <p>This site allows you to add, view, edit, and delete Movies from the Movies collection.</p>
+        <a href="/movies/add" class="btn">Add New Movie</a>
     </main>
 
     <footer>
