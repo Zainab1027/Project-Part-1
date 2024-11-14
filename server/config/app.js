@@ -1,47 +1,61 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
-require('dotenv').config();  // Make sure environment variables are loaded before usage
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
 
-const app = express();  // Initialize app after all dependencies
+let indexRouter = require('../routes/index');
+let usersRouter = require('../routes/users');
+let moviesRouter = require('../routes/movie');
 
-// MongoDB connection setup
-const DB_URI = process.env.DB_URI;
-mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
+let app = express();
 
-// Set up view engine
-app.set('views', path.join(__dirname, '../views'));
+// Database setup
+let mongoose = require('mongoose');
+let DB = require('./db');
+mongoose.connect(DB.URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+let mongoDB = mongoose.connection;
+mongoDB.on('error', console.error.bind(console, 'Connection Error:'));
+mongoDB.once('open', () => {
+  console.log('MongoDB Connected');
+});
+
+// View engine setup
+app.set('views', path.join(__dirname, '../views'));  // Fixed path for views
 app.set('view engine', 'ejs');
 
-// Middleware setup
+// Middleware
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../../public')));
 
-// Import routes after setting up the app
-const indexRouter = require('../routes/index');
-const usersRouter = require('../routes/users');
-const bookRouter = require('../routes/book');
+// Static files
+app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../node_modules')));  // Only if you need assets from node_modules
 
-// Use routes
-app.use('/', indexRouter);      // Main page route
-app.use('/users', usersRouter); // Users route
-app.use('/books', bookRouter);  // Books route for CRUD operations
+// Routes
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/movie', moviesRouter);
 
-// Error handling middleware
-app.use((req, res, next) => {
-  const error = new Error('Not Found');
-  error.status = 404;
-  next(error);
+// Catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.render('error', { title: 'Error', error });
+// Error handler
+app.use(function (err, req, res, next) {
+  // Set locals, only providing error details in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // Render the error page
+  res.status(err.status || 500);
+  res.render('error', { title: 'Error' });
 });
 
 module.exports = app;
