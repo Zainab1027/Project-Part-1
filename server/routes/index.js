@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
   res.render('Movies/list', { title: 'Movies' });
 });
-/* GET movies list */
+/* GET movies list. */
 router.get('/movies', function (req, res, next) {
   res.render('Movies/list', { title: 'Movies' });
 });
@@ -17,6 +17,5 @@ router.get('/movies/add', function (req, res, next) {
 router.get('/movies/edit', function (req, res, next) {
   res.render('Movies/edit', { title: 'Edit movie' });
 });
-
 
 module.exports = router;

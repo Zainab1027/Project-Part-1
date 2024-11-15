@@ -1,27 +1,14 @@
-const mongoose = require('mongoose');
-
-// Define the Movie schema
-const movieSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  genre: {
-    type: String,
-    required: true
-  },
-  year: {
-    type: Number,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
+// MVC --> Model , View , Controller (Routers)
+let mongoose = require('mongoose')
+// create a model class
+let MovieModel = mongoose.Schema({
+  title: String,
+  genre: String,
+  year: String,
+  description: String
+},
+  {
+    collection: "Movies"
   }
-});
-{
-  collection: "Movies"
-}
-
-// Export the Movie model
-module.exports = mongoose.model('Movie', movieSchema);
+)
+module.exports = mongoose.model('MovieModel', MovieModel)
