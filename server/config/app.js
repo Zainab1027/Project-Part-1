@@ -2,46 +2,46 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-require('dotenv').config();  // Make sure environment variables are loaded before usage
+require('dotenv').config();
 
-const app = express();  // Initialize app after all dependencies
+const app = express();
 
-// MongoDB connection setup
-const DB_URI = process.env.DB_URI;
+// MongoDB connection
+const DB_URI = process.env.DB_URI || require('./server/config/db').URI;
 mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Set up view engine
-app.set('views', path.join(__dirname, '../views'));
+// Middleware and view setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../../public')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
-// Import routes after setting up the app
-const indexRouter = require('../routes/index');
-const usersRouter = require('../routes/users');
-const bookRouter = require('../routes/book');
+// Routes
+const indexRouter = require('./server/routes/index');
+const usersRouter = require('./server/routes/users');
+const bookRouter = require('./server/routes/book');
 
-// Use routes
-app.use('/', indexRouter);      // Main page route
-app.use('/users', usersRouter); // Users route
-app.use('/books', bookRouter);  // Books route for CRUD operations
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/books', bookRouter);
 
-// Error handling middleware
+// Error handling
 app.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
   next(error);
 });
 
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.render('error', { title: 'Error', error });
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.status(err.status || 500);
+  res.render('error', { title: 'Error' });
 });
 
 module.exports = app;
