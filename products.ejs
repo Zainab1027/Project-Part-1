@@ -1,0 +1,32 @@
+<%- include Partials/header.ejs %>
+<%- include Partials/main_nav.ejs %>
+
+<div class="home-page">
+  <div class="movie-page">
+    <!-- Title and Description Section -->
+    <div class="movie-header">
+      <h1 class="home-title">
+        <%= title %>
+      </h1>
+      <% if (displayName) { %>
+        <p>Hello, <%= displayName %>!</p>
+    <% } else { %>
+        <p>Hello, Guest!</p>
+    <% } %>
+      <p class="home-description">
+        <%= description %>
+      </p>
+    </div>
+
+    <!-- Images Section -->
+    <div class="movie-images">
+      <img class="movie-image" src="/Assets/images/Barbie.jpg" alt="Barbie">
+      <img class="movie-image" src="/Assets/images/interstellar.jpg" alt="Interstellar">
+      <img class="movie-image" src="/Assets/images/insidious.jpg" alt="Insidious">
+      <img class="movie-image" src="/Assets/images/smile2.jpg" alt="Smile">
+      <img class="movie-image" src="/Assets/images/missionimpossible.jpg" alt="Mission Impossible">
+    </div>
+  </div>
+</div>
+
+<%- include Partials/footer.ejs %>
