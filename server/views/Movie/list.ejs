@@ -1,0 +1,69 @@
+<%- include('../Partials/header.ejs') %>
+<%- include('../Partials/main_nav.ejs') %>
+
+<!-- Movie Database -->
+<main class="container">
+    <div class="row">
+        <div class="offset-md-1 col-md-10">
+            <h1><%= title %></h1>
+            <br>
+
+            <!-- Display Add Movie button only if displayName exists -->
+            <% if (typeof displayName === 'string' && displayName) { %>
+                <a href="/movieslist/add" class="btn btn-primary" role="button">
+                    <i class="fas fa-plus-circle"></i> Add Movie
+                </a>
+            <% } %>
+
+            <table class="table table-bordered table-striped table-hover">
+                <% if (typeof displayName === 'string' && displayName) { %>
+                    <tr class="d-flex">
+                        <th class="text-center col-2">Title</th>
+                        <th class="text-center col-2">Genre</th>
+                        <th class="text-center col-1">Rating</th>
+                        <th class="col-4">Description</th>
+                        <th class="text-center col-1">Edit</th>
+                        <th class="text-center col-1">Delete</th>
+                    </tr>
+                <% } else { %>
+                    <tr class="d-flex">
+                        <th class="text-center col-3">Title</th>
+                        <th class="text-center col-3">Genre</th>
+                        <th class="text-center col-2">Rating</th>
+                        <th class="col-4">Description</th>
+                    </tr>
+                <% } %>
+
+                <% for (let count = 0; count < MovieList.length; count++) { %>
+                    <% if (typeof displayName === 'string' && displayName) { %>
+                        <tr class="d-flex">
+                            <td class="text-center col-2"><%= MovieList[count].Title %></td>
+                            <td class="text-center col-2"><%= MovieList[count].Genre %></td>
+                            <td class="text-center col-1"><%= MovieList[count].Rating %></td>
+                            <td class="col-4"><%= MovieList[count].Description %></td>
+                            <td class="text-center col-1">
+                                <a href="/movieslist/edit/<%= MovieList[count]._id %>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-pencil-alt"></i> Edit
+                                </a>
+                            </td>
+                            <td class="text-center col-1">
+                                <a href="/movieslist/delete/<%= MovieList[count]._id %>" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    <% } else { %>
+                        <tr class="d-flex">
+                            <td class="text-center col-3"><%= MovieList[count].Title %></td>
+                            <td class="text-center col-3"><%= MovieList[count].Genre %></td>
+                            <td class="text-center col-2"><%= MovieList[count].Rating %></td>
+                            <td class="col-4"><%= MovieList[count].Description %></td>
+                        </tr>
+                    <% } %>
+                <% } %>
+            </table>
+        </div>
+    </div>
+</main>
+
+<%- include('../Partials/footer.ejs') %>

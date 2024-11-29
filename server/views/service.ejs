@@ -1,0 +1,14 @@
+<%- include('./Partials/header.ejs') %>
+<%- include('./Partials/main_nav.ejs') %>
+    <!--Main content-->
+    <div class="home-page">
+        <h1 class="home-title"> <%= title %></h1>
+        <% if (displayName) { %>
+          <p>Hello, <%= displayName %>!</p>
+      <% } else { %>
+          <p>Hello, Guest!</p>
+      <% } %>
+          <p class="home-description"><%= description %></p>
+          <img class="home-image" src="../Assets/images/CRUD.jpg" alt="service">
+          </div>
+<%- include('./Partials/footer.ejs') %>
