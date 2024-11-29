@@ -1,111 +1,57 @@
-let express = require('express');
-let router = express.Router();
-const passport = require('passport');
-let userModel = require('../model/user');
-let User = userModel.User;
+var express = require('express');
+var router = express.Router();
+const indexController = require('../controllers/index');
 
-module.exports.displayLoginPage = (req, res, next) => {
-    if (!req.user) {
-        res.render('./auth/login',
-            {
-                title: 'login',
-                message: req.flash('LoginMessage'),
-                displayName: req.user ? req.user.displayName : ''
-            })
-    }
-    else {
-        return res.redirect('/')
-    }
-}
+/* GET index page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Home', description: "Welcome!!",
+    displayName: req.user ? req.user.displayName : ''});
+});
+/* GET home page. */
+router.get('/home', function(req, res, next) {
+  res.render('index', { title: 'Welcome to our Movie Library!!',
+    description: 'This is a simple Movie Library. You can add, edit, delete, and view your movies.',
+    displayName: req.user ? req.user.displayName : ''}); //add displayName
+});
+/* GET About page. */
+router.get('/aboutus', function(req, res, next) {
+  res.render('aboutus', { title: 'About us',
+    description: "Hi, welcome! We are team R&Z!, We are the developer of this movie library application. We are passionate about making a Library where we can share our favourite movies. We wanted to create a site where all of us can share our top best movies with others.",
+    displayName: req.user ? req.user.displayName : ''}); //add displayName
+});
+/* GET products page. */
+router.get('/products', function(req, res, next) {
+  res.render('products', { title: 'Products',
+    description: "Here are some of the products we have created. You can also add your movies to this list in the movies section.",
+    displayName: req.user ? req.user.displayName : ''}); //add displayName
+});
+/* GET service page. */
+router.get('/service', function(req, res, next) {
+  res.render('service', { title: 'Service',
+    description: 'Our service includes creating, editing, deleting, and viewing movies.',
+    displayName: req.user ? req.user.displayName : ''}); //add displayName
+});
 
-module.exports.processLoginPage = (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        //Server error
-        if (err) {
-            return next(err);
-        }
+/* GET contactus page. */
+router.get('/contactus', function(req, res, next) {
+  res.render('contactus', { title: 'Contact Us',
+    description: 'if you have any questions or need help with creating movies in our library, please don\'t hesitate to contact us at zainab.syed1@ontariotechu.net or rida.fatima1@ontariotechu.net.',
+    displayName: req.user ? req.user.displayName : ''}); //add displayName
+});
 
-        // is a login error
-        if (!user) {
-            req.flash('loginMessage','AuthenticationError');
-            return res.redirect('/login');
-        }
-        req.login(user, (err) => {
-            if (err) {
-                return next(err);
-            }
-            return res.redirect('/movieslist');
-        });
-    })(req, res, next);
-};
+// Get router for login page
+router.get('/login', indexController.displayLoginPage);
 
-module.exports.displayRegisterPage = (req, res, next) => {
-    //check if the user is not already logged in
-    if (!req.user) {
-        res.render('auth/register',
-            {
-                title: 'Register',
-                message: req.flash('registerMessage'),
-                displayName: req.user ? req.user.displayName : '',
-            });
-    }
-    else {
-        return res.redirect('/');
-    }
-};
-module.exports.processRegisterPage = (req, res, next) => {
-    let newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        displayName: req.body.displayName,
-    });
+//post router for login page
+router.post('/login', indexController.processLoginPage);
 
-    // Attempt to register the new user
-    User.register(newUser, req.body.password, (err, user) => {
-        if (err) {
-            console.error("Error: Inserting the new user:", err);
+// Get router for registration page
+router.get('/register', indexController.displayRegisterPage);
 
-            // Handle UserExistsError
-            if (err.name === "UserExistsError") {
-                req.flash("registerMessage", "Registration Error: User already exists.");
-            } else {
-                req.flash("registerMessage", "Registration Error. Please try again.");
-            }
+//post router for registration page
+router.post('/register', indexController.processRegisterPage);
 
-            // Re-render the registration page with the error message
-            return res.render("auth/register", {
-                title: "Register",
-                message: req.flash("registerMessage"),
-                displayName: req.user ? req.user.displayName : "",
-            });
-        }
+//get router for logout page
+router.get('/logout', indexController.performLogout);
 
-        // Automatically log in the user after successful registration
-        req.login(user, (err) => {
-            if (err) {
-                console.error("Error during auto-login:", err);
-                return next(err);
-            }
-
-            console.log("Redirecting to /movieslist after successful registration.");
-            return res.redirect("/movieslist"); // Redirect to movies list after registration
-        });
-    });
-};
-
-module.exports.performLogout = (req,res,next)=>
-{  
-    req.logout(function(err){
-        if(err){
-            return next(err);
-        }
-    })
-    res.redirect('/');
-}
-
-module.exports.displayHomePage = (req, res, next)=>{
-    res.render('index', {
-        title: 'Home',
-        displayName: req.user ? req.user.displayName:''
-    });
-}
+module.exports = router;
