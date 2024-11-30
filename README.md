@@ -6,6 +6,12 @@ This is a basic web application for managing a movie library. Users can add, vie
 
 The Movie Library Web Application is a simple CRUD (Create, Read, Update, Delete) app where users can manage a collection of movies. This is the first release version of the application with basic functionality and design.
 
+## Here is our slides link below representing our team, our logo and project 
+https://docs.google.com/presentation/d/1F83fiBJFKe3MvX2C2dv3lsUEha46TG8s/edit?usp=sharing&ouid=118376135044859951431&rtpof=true&sd=true
+
+## Our Youtube Link:
+
+
 ## Features
 
 - **Add Movie**: Users can add a new movie to the library.
@@ -13,6 +19,7 @@ The Movie Library Web Application is a simple CRUD (Create, Read, Update, Delete
 - **Edit Movie**: Users can update the details of a selected movie.
 - **Delete Movie**: Users can remove a movie from the library.
 - **Responsive Layout**: Basic responsive design using Bootstrap (CSS customization optional).
+- **User can login/register and logout**: Passport authentication is added, having unauthorized users not have access to adding, editing or deleting movies from the movies library.
   
 ## Dependencies
 **Express**: Web framework for Node.js
